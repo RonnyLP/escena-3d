@@ -290,7 +290,7 @@ export function makeCube() {
 
   // Índices de las 6 caras del cubo
   const faces = [
-    [0,1,2,3], // abajo
+    [0,3,2,1], // abajo
     [4,5,6,7], // arriba
     [0,1,5,4], // frente
     [2,3,7,6], // atrás
