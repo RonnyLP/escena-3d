@@ -179,16 +179,81 @@ export function brepToTexturedMesh(solid, texture, options = {}) {
 
 
 
-function makeFaceFromIndices(solid, indices) {
+// function makeFaceFromIndices(solid, indices) {
+//   const face = new Face();
+//   let firstHe = null;
+//   let prevHe = null;
+
+//   for (let i = 0; i < indices.length; i++) {
+//     const v = solid.vertices[indices[i]];
+
+//     const he = new HalfEdge();
+//     he.vertex = v;
+//     he.face = face;
+
+//     if (!firstHe) firstHe = he;
+//     if (prevHe) prevHe.next = he;
+
+//     solid.halfEdges.push(he);
+//     prevHe = he;
+//   }
+
+//   // cerrar el loop
+//   prevHe.next = firstHe;
+//   face.edge = firstHe;
+//   solid.faces.push(face);
+
+//   return face;
+// }
+
+function makeFaceFromIndices(solid, indices, clockwise = true) {
+  // Convertir índices a vértices reales
+  const vertices = indices.map(i => solid.vertices[i]);
+
+  // Delegar en makeFaceFromVertices
+  return makeFaceFromVertices(solid, vertices, clockwise);
+}
+
+
+
+// function makeFaceFromVertices(solid, vertices) {
+//   const face = new Face();
+//   let firstHe = null;
+//   let prevHe = null;
+
+//   for (let i = 0; i < vertices.length; i++) {
+//     const he = new HalfEdge();
+//     he.vertex = vertices[i];
+//     he.face = face;
+
+//     if (!firstHe) firstHe = he;
+//     if (prevHe) prevHe.next = he;
+
+//     solid.halfEdges.push(he);
+
+//     prevHe = he;
+//   }
+
+//   // Cerrar el loop
+//   prevHe.next = firstHe;
+//   face.edge = firstHe;
+
+//   solid.faces.push(face);
+
+//   return face;
+// }
+
+function makeFaceFromVertices(solid, vertices, clockwise = true) {
+  // Si clockwise es false, invertir el orden de los vértices
+  const verts = clockwise ? vertices : [...vertices].reverse();
+
   const face = new Face();
   let firstHe = null;
   let prevHe = null;
 
-  for (let i = 0; i < indices.length; i++) {
-    const v = solid.vertices[indices[i]];
-
+  for (let i = 0; i < verts.length; i++) {
     const he = new HalfEdge();
-    he.vertex = v;
+    he.vertex = verts[i];
     he.face = face;
 
     if (!firstHe) firstHe = he;
@@ -201,37 +266,13 @@ function makeFaceFromIndices(solid, indices) {
   // cerrar el loop
   prevHe.next = firstHe;
   face.edge = firstHe;
-  solid.faces.push(face);
-
-  return face;
-}
-
-function makeFaceFromVertices(solid, vertices) {
-  const face = new Face();
-  let firstHe = null;
-  let prevHe = null;
-
-  for (let i = 0; i < vertices.length; i++) {
-    const he = new HalfEdge();
-    he.vertex = vertices[i];
-    he.face = face;
-
-    if (!firstHe) firstHe = he;
-    if (prevHe) prevHe.next = he;
-
-    solid.halfEdges.push(he);
-
-    prevHe = he;
-  }
-
-  // Cerrar el loop
-  prevHe.next = firstHe;
-  face.edge = firstHe;
 
   solid.faces.push(face);
 
   return face;
 }
+
+
 
 
 
@@ -281,9 +322,12 @@ export function extrudePolygon(points2D, height = 2) {
   const n = points2D.length;
 
   // Cara inferior
-  makeFaceFromIndices(solid, bottom);
+  // makeFaceFromIndices(solid, bottom, false);
+  makeFaceFromVertices(solid, bottom, false);
+  console.log(bottom);
   // Cara superior
-  makeFaceFromIndices(solid, top);
+  makeFaceFromVertices(solid, top);
+  console.log(top);
 
   // Caras laterales
   for (let i=0;i<n;i++){
@@ -312,7 +356,8 @@ export function makeCylinder(radius = 1, height = 3, segments = 32) {
   solid.vertices.push(...bottom, ...top);
 
   // base
-  makeFaceFromVertices(solid, bottom);
+  makeFaceFromVertices(solid, bottom, false);
+  console.log(bottom)
   // tapa
   makeFaceFromVertices(solid, top);
 

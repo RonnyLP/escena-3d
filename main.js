@@ -104,11 +104,11 @@ const bigGeo = new THREE.BoxGeometry(2, 2, 2);
 const fractalTexture = createFractalTexture(512);
 
 const bigMaterials = [
-  new THREE.MeshPhongMaterial({ map: fractalTexture }),       // Cara 0: fractal
+  new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true }),
   new THREE.MeshPhongMaterial({ color: 0x2288ff, flatShading: true }),
   new THREE.MeshPhongMaterial({ color: 0xff8822, flatShading: true }),
   new THREE.MeshPhongMaterial({ color: 0x22ff88, flatShading: true }),
-  new THREE.MeshPhongMaterial({ color: 0xffffff, flatShading: true }),
+  new THREE.MeshPhongMaterial({ map: fractalTexture }),
   new THREE.MeshPhongMaterial({ color: 0x444444, flatShading: true })
 ];
 
@@ -185,15 +185,18 @@ scene.add(pointCloud);
 
 const s1 = makeCube();
 const s2 = extrudePolygon([new THREE.Vector2(0,0), new THREE.Vector2(2,0), new THREE.Vector2(1,1)], 2);
-const s3 = makeCylinder(1, 3, 32);
+const s3 = makeCylinder(1, 3, 16);
 
 const mesh1 = brepToMesh(s1, new THREE.MeshPhongMaterial({color:0xff0000}));
 const mesh2 = brepToMesh(s2, new THREE.MeshPhongMaterial({color:0x00ff00}));
 const mesh3 = brepToMesh(s3, new THREE.MeshPhongMaterial({color:0x0000ff}));
 
 mesh1.position.x = -5;
+mesh1.position.z = -4;
 mesh2.position.x = 0;
+mesh2.position.z = -4;
 mesh3.position.x = 5;
+mesh3.position.z = -4;
 
 scene.add(mesh1, mesh2, mesh3);
 // scene.add(mesh1);
