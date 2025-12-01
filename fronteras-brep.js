@@ -313,8 +313,8 @@ export function extrudePolygon(points2D, height = 2) {
   const top = [];
 
   for (let p of points2D) {
-    bottom.push(new Vertex(p.x, p.y, 0));
-    top.push(new Vertex(p.x, p.y, height));
+    bottom.push(new Vertex(p.x, 0, p.y));
+    top.push(new Vertex(p.x, height, p.y));
   }
 
   solid.vertices.push(...bottom, ...top);
@@ -323,10 +323,10 @@ export function extrudePolygon(points2D, height = 2) {
 
   // Cara inferior
   // makeFaceFromIndices(solid, bottom, false);
-  makeFaceFromVertices(solid, bottom, false);
+  makeFaceFromVertices(solid, bottom);
   console.log(bottom);
   // Cara superior
-  makeFaceFromVertices(solid, top);
+  makeFaceFromVertices(solid, top, false);
   console.log(top);
 
   // Caras laterales
@@ -335,7 +335,7 @@ export function extrudePolygon(points2D, height = 2) {
     const b = bottom[(i+1)%n];
     const c = top[(i+1)%n];
     const d = top[i];
-    makeFaceFromVertices(solid, [a,b,c,d]);
+    makeFaceFromVertices(solid, [a,b,c,d], false);
   }
 
   return solid;
@@ -349,17 +349,17 @@ export function makeCylinder(radius = 1, height = 3, segments = 32) {
 
   for (let i=0;i<segments;i++) {
     const a = (i / segments) * Math.PI * 2;
-    bottom.push(new Vertex(Math.cos(a)*radius, Math.sin(a)*radius, 0));
-    top.push(new Vertex(Math.cos(a)*radius, Math.sin(a)*radius, height));
+    bottom.push(new Vertex(Math.cos(a)*radius, 0, Math.sin(a)*radius));
+    top.push(new Vertex(Math.cos(a)*radius, height, Math.sin(a)*radius));
   }
 
   solid.vertices.push(...bottom, ...top);
 
   // base
-  makeFaceFromVertices(solid, bottom, false);
+  makeFaceFromVertices(solid, bottom);
   console.log(bottom)
   // tapa
-  makeFaceFromVertices(solid, top);
+  makeFaceFromVertices(solid, top, false);
 
   // caras laterales
   for (let i=0;i<segments;i++){
@@ -367,7 +367,7 @@ export function makeCylinder(radius = 1, height = 3, segments = 32) {
     const b = bottom[(i+1)%segments];
     const c = top[(i+1)%segments];
     const d = top[i];
-    makeFaceFromVertices(solid, [a,b,c,d]);
+    makeFaceFromVertices(solid, [a,b,c,d], false);
   }
 
   return solid;
